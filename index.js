@@ -39,14 +39,28 @@ async function run() {
             const posts = await postCollection.find(query).toArray();
             res.send(posts);
         });
-        app.get('/comments/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = {
-                _id: ObjectId(id)
-            };
-            const comment = await commentCollection.findOne(query);
-            res.send(comment);
-        });
+
+    
+        // app.get('/comments/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     const query = {
+        //         _id: ObjectId(id)
+        //     };
+        //     const comment = await commentCollection.findOne(query);
+        //     res.send(comment);
+        // });
+
+        app.get('/comments', async (req, res) => {
+            let query = {};
+            if (req.query.showDetailsId) {
+                query = {
+                    showDetailsId: req.query.showDetailsId
+                }
+            }
+            const cursor = commentCollection.find(query).sort({ "_id": -1 })
+            const comments = await cursor.toArray();
+            res.send(comments)
+        })
 
         app.get('/showdetails/:id', async (req, res) => {
             const id = req.params.id;
